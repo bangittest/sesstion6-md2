@@ -12,7 +12,6 @@ export default function ListUser() {
     const students = JSON.parse(localStorage.getItem("students")) || [];
     return students;
   });
-  const studentData = Array.isArray(listStudent) ? listStudent : [];
 
   // hàm hiện form
   const handleShowForm = () => {
@@ -33,6 +32,9 @@ export default function ListUser() {
 
   //ham xoa
   const handleDelete=(id)=>{
+    if(!confirm("Are you sure you want to delete")){
+      return
+    }
     // B1. Lọc ra mảng mới có các student có id khác với id cần xóa
     const newListStudent=listStudent.filter((st)=>st.studentId !== id)
     localStorage.setItem("students",JSON.stringify(newListStudent))
@@ -40,9 +42,6 @@ export default function ListUser() {
     //load lai du lieu
     setListStudent(newListStudent);
   }
-
-
-
   //ham edit
 
   const handleShowEdit =(id)=>{
@@ -58,8 +57,8 @@ export default function ListUser() {
 
 
   return (
-    <>
     //form add
+    <>
       {show ? (
         <Form handleCloseForm={handleCloseForm} listStudent={listStudent} loadData={loadData} />
       ) : (
@@ -157,46 +156,6 @@ export default function ListUser() {
                 )}
               </tbody>
             </table>
-            <div className="clearfix">
-              <div className="hint-text">
-                Hiển thị <b>5</b>/<b>10 </b>bản ghi
-              </div>
-              <ul className="pagination">
-                <li className="page-item disabled">
-                  <a href="#">Trước</a>
-                </li>
-                <li className="page-item">
-                  <a href="#" className="page-link">
-                    1
-                  </a>
-                </li>
-                <li className="page-item">
-                  <a href="#" className="page-link">
-                    2
-                  </a>
-                </li>
-                <li className="page-item active">
-                  <a href="#" className="page-link">
-                    3
-                  </a>
-                </li>
-                <li className="page-item">
-                  <a href="#" className="page-link">
-                    4
-                  </a>
-                </li>
-                <li className="page-item">
-                  <a href="#" className="page-link">
-                    5
-                  </a>
-                </li>
-                <li className="page-item">
-                  <a href="#" className="page-link">
-                    Sau
-                  </a>
-                </li>
-              </ul>
-            </div>
           </div>
         </div>
       </div>

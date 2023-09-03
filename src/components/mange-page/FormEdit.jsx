@@ -13,6 +13,11 @@ export default function FormEdit({
     address: "",
     phoneNumber: "",
   });
+  const[error,setError]=useState({
+    studentsName:"",
+    email:"",
+    phoneNumber:"",
+  })
 
   // Tìm kiếm thông tin sinh viên theo id được truyền từ component cha
   const findStudent = () => {
@@ -34,12 +39,52 @@ export default function FormEdit({
     // const { name, value } = e.target;
     // set state cho student
     setStudent({ ...student, [name]: value });
+
+
+    //xoa thong bao loi khi nguoi dung cap nhat gia tri input
+    setError({...error, [name]:""})
   };
 
   // Hàm cập nhật giá trị
   const handleSubmit = (e) => {
     // Ngăn chặn sự kiện mặc định của form
     e.preventDefault();
+    // Kiểm tra giá trị của các ô input
+    const newError = {};
+    if (!student.studentsName) {
+      newError.studentsName = "Vui lòng nhập tên sinh viên.";
+    }
+    if (!student.email) {
+      newError.email = "Vui lòng nhập địa chỉ email.";
+    } else {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(student.email)) {
+        newError.email = "Địa chỉ email không hợp lệ.";
+      }
+    }
+    if (!student.phoneNumber) {
+      newError.phoneNumber = "Vui lòng nhập số điện thoại.";
+    } else {
+      const phonePattern = /^\d{10}$/;
+      if (!phonePattern.test(student.phoneNumber)) {
+        newError.phoneNumber = "Số điện thoại không hợp lệ.";
+      }
+    }
+
+    // Kiểm tra email có trùng lặp trong danh sách hiện tại không
+    const isEmail = listStudent.some((e) => e.email === student.email);
+    if (isEmail) {
+      newError.email = "Email đã tồn tại trong danh sách.";
+    }
+
+    // Nếu có lỗi, hiển thị thông báo lỗi
+    if (Object.keys(newError).length > 0) {
+      setError(newError);
+      return;
+    }
+
+
+
     // Tạo một bản sao mới của danh sách sinh viên để không ảnh hưởng đến danh sách gốc
     const updatedList = [...listStudent];
 
@@ -82,6 +127,7 @@ export default function FormEdit({
                     name="studentsName"
                     required=""
                   />
+                  {error.studentsName && <div className="text-danger">{error.studentsName}</div>}
                 </div>
                 <div className="form-group">
                   <label>Email</label>
@@ -93,6 +139,7 @@ export default function FormEdit({
                     className="form-control"
                     required=""
                   />
+                  {error.email && <div className="text-danger">{error.email}</div>}
                 </div>
                 <div className="form-group">
                   <label>Địa chỉ</label>
@@ -114,6 +161,7 @@ export default function FormEdit({
                     className="form-control"
                     required=""
                   />
+                  {error.phoneNumber && <div className="text-danger">{error.phoneNumber}</div>}
                 </div>
               </div>
               <div className="modal-footer">
